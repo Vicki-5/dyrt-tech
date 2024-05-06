@@ -13,7 +13,11 @@ import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {campgroundURL} from '../../constants';
-import {HomeParamList} from '../../types/navigation';
+import CampgroundScreen from '../CampgroundScreen';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import SearchScreen from '../SearchScreen';
+
+const Stack = createNativeStackNavigator<HomeParamList>();
 
 export const getCampgroundList = async (
   lat: number,
@@ -22,7 +26,13 @@ export const getCampgroundList = async (
   const [response] = await Promise.all([
     axios.get(campgroundURL + `?lat=${lat}&lon=${lon}`),
   ]);
-  return response.data.map((item: AutocompleteCampground) => ({
+
+  const filteredData = response.data.filter(
+    (item: AutocompleteCampground) => item.photoUrl,
+  );
+  const slicedData = filteredData.slice(0, 10);
+
+  return slicedData.map((item: AutocompleteCampground) => ({
     id: item.id.toString(), // Convert id to string as Campground's id is string type
     type: item.type, // Assuming type is the same for both AutocompleteCampground and Campground
     links: {self: ''}, // Assuming links are not relevant
@@ -46,8 +56,26 @@ export const getCampgroundList = async (
   }));
 };
 
+const SearchScreenStack = () => {
+  return (
+    <Stack.Navigator initialRouteName="SearchScreen">
+      <Stack.Screen
+        name="SearchScreen"
+        component={SearchScreen}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="CampgroundDetails"
+        component={CampgroundScreen}
+        options={{headerTitle: 'Campground Details'}}
+      />
+    </Stack.Navigator>
+  );
+};
+
+
 const HomeScreen = () => {
-  const {navigate} = useNavigation<StackNavigationProp<HomeParamList>>();
+  const {navigate} = useNavigation<StackNavigationProp<SearchParamList>>();
 
   const [campgrounds, setCampgrounds] = useState<Campground[]>([]);
 
@@ -140,6 +168,7 @@ const styles = StyleSheet.create({
   imageText: {
     fontSize: 14,
     textAlign: 'center',
+    flexWrap: 'wrap',
   },
   card: {
     height: 300,
