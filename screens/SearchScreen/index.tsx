@@ -40,9 +40,9 @@ export const getAutocomplete = async (query: string): Promise<Campground[]> => {
 
 const SearchScreenStack = () => {
   return (
-    <Stack.Navigator initialRouteName="Search">
+    <Stack.Navigator initialRouteName="SearchScreen">
       <Stack.Screen
-        name="Search"
+        name="SearchScreen"
         component={SearchScreen}
         options={{headerShown: false}}
       />

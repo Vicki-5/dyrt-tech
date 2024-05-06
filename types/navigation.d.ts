@@ -7,10 +7,10 @@ type RootStackParamList = {
 
 type BottomTabParamList = {
   Home: undefined;
-  Search: NavigatorScreenParams<BottomTabParamList>;
+  Search: undefined;
 };
 
 type SearchParamList = {
-  Search: undefined;
+  SearchScreen: undefined;
   CampgroundDetails: {campgroundId: Campground['id']};
 };
