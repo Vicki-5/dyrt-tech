@@ -8,9 +8,7 @@ import axios from 'axios';
 
 const Stack = createNativeStackNavigator<SearchParamList>();
 
-export const getAutocomplete = async (
-  query: string,
-): Promise<Campground[]> => {
+export const getAutocomplete = async (query: string): Promise<Campground[]> => {
   const response = await axios.get(
     `https://staging.thedyrt.com/api/v6/autocomplete/campgrounds?q=${encodeURIComponent(
       query,
@@ -19,7 +17,7 @@ export const getAutocomplete = async (
   return response.data.map((item: AutocompleteCampground) => ({
     id: item.id.toString(), // Convert id to string as Campground's id is string type
     type: item.type, // Assuming type is the same for both AutocompleteCampground and Campground
-    links: {self: ''}, // Assuming links are not relevant in the autocomplete context
+    links: {self: ''}, // Assuming links are not relevant
     attributes: {
       coordinates: {
         type: 'Point',
