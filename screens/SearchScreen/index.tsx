@@ -4,13 +4,14 @@ import {useNavigation} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import CampgroundScreen from '../CampgroundScreen';
 import {StackNavigationProp} from '@react-navigation/stack';
+import axios from 'axios';
 
 const Stack = createNativeStackNavigator<SearchParamList>();
 
-export const getAutocomplete = (
+export const getAutocomplete = async (
   query: string,
 ): Promise<AutocompleteCampground[]> => {
-  const response = axios.get(
+  const response = await axios.get(
     `https://staging.thedyrt.com/api/v6/autocomplete/campgrounds?q=${encodeURIComponent(
       query,
     )}`,
@@ -40,7 +41,7 @@ const SearchScreen = () => {
 
   const [campgrounds, setCampgrounds] = useState<Campground>();
 
-  const handleSearch = text => {
+  const handleSearch = (text: string) => {
     getAutocomplete(text).then(data => setCampgrounds(data));
   };
 
