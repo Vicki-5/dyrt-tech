@@ -1,13 +1,65 @@
-import React from 'react';
-import {View, Text, StyleSheet, Button} from 'react-native';
+import React, {useState} from 'react';
+import {View, Text, StyleSheet, Button, FlatList, Image} from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import axios from 'axios';
+import CampgroundScreen from '../CampgroundScreen';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {campgroundURL} from '../../constants';
+
+const Stack = createNativeStackNavigator<HomeParamList>();
+
+export const getCampgroundList = async (
+  lat: number,
+  lon: number,
+): Promise<Campground[]> => {
+  const [response] = await Promise.all([
+    axios.get(
+      campgroundURL + `?lat=${lat}&lon=${lon}`,
+    ),
+  ]);
+  return response.data.map((item: AutocompleteCampground) => ({
+    id: item.id.toString(), // Convert id to string as Campground's id is string type
+    type: item.type, // Assuming type is the same for both AutocompleteCampground and Campground
+    links: {self: ''}, // Assuming links are not relevant
+    attributes: {
+      coordinates: {
+        type: 'Point',
+        coordinates: [item.coordinates.lon, item.coordinates.lat],
+      },
+      latitude: item.coordinates.lat,
+      longitude: item.coordinates.lon,
+      name: item.name,
+      'photo-url': item.photoUrl,
+      region: item.region,
+      'region-name': item.region_name,
+      slug: item.slug,
+      'photos-count': item.photos_count,
+      'videos-count': item.videos_count,
+      'reviews-count': item.reviews_count,
+    },
+    relationships: {},
+  }));
+};
 
 const HomeScreen = () => {
+  const {navigate} = useNavigation<StackNavigationProp<HomeParamList>>();
+
+  const [campgrounds, setCampgrounds] = useState<Campground[]>([]);
+
+  const handlePressCampground = (item: Campground) => {
+    navigate('CampgroundDetails', {campgroundId: item.id});
+  };
+
   const handleDisplayNearbyLocations = () => {
-    //TODO: Implement logic to display nearby locations using the following Geolocation API
     Geolocation.getCurrentPosition(
       async position => {
         console.log(position);
+        getCampgroundList(
+          position.coords.latitude,
+          position.coords.longitude,
+        ).then(data => setCampgrounds(data));
       },
       error => {
         console.error(error);
@@ -35,6 +87,15 @@ const HomeScreen = () => {
           alignItems: 'center',
         }}>
         <Text>Display Nearby Locations Here</Text>
+
+        <FlatList
+          data={campgrounds}
+          renderItem={({item}) => (
+            <Text onPress={() => handlePressCampground(item)}>
+              {item.attributes.name}
+            </Text>
+          )}
+        />
       </View>
     </View>
   );

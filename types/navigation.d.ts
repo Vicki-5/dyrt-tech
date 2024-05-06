@@ -14,3 +14,8 @@ type SearchParamList = {
   SearchScreen: undefined;
   CampgroundDetails: {campgroundId: Campground['id']};
 };
+
+type HomeParamList = {
+  Home: undefined;
+  CampgroundDetails: {campgroundId: Campground['id']};
+}
