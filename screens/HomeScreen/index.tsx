@@ -1,23 +1,17 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, Button, FlatList, Image} from 'react-native';
+import {View, Text, StyleSheet, Button, FlatList} from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import axios from 'axios';
-import CampgroundScreen from '../CampgroundScreen';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {campgroundURL} from '../../constants';
-
-const Stack = createNativeStackNavigator<HomeParamList>();
 
 export const getCampgroundList = async (
   lat: number,
   lon: number,
 ): Promise<Campground[]> => {
   const [response] = await Promise.all([
-    axios.get(
-      campgroundURL + `?lat=${lat}&lon=${lon}`,
-    ),
+    axios.get(campgroundURL + `?lat=${lat}&lon=${lon}`),
   ]);
   return response.data.map((item: AutocompleteCampground) => ({
     id: item.id.toString(), // Convert id to string as Campground's id is string type
