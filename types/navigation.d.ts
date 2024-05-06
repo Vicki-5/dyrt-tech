@@ -18,4 +18,4 @@ type SearchParamList = {
 type HomeParamList = {
   Home: undefined;
   CampgroundDetails: {campgroundId: Campground['id']};
-}
+};

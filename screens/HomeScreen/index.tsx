@@ -1,10 +1,19 @@
 import React, {useState} from 'react';
-import {View, Text, StyleSheet, Button, FlatList} from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Button,
+  FlatList,
+  Image,
+  TouchableOpacity,
+} from 'react-native';
 import Geolocation from '@react-native-community/geolocation';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {campgroundURL} from '../../constants';
+import {HomeParamList} from '../../types/navigation';
 
 export const getCampgroundList = async (
   lat: number,
@@ -83,12 +92,20 @@ const HomeScreen = () => {
         <Text>Display Nearby Locations Here</Text>
 
         <FlatList
+          horizontal={true}
           data={campgrounds}
           renderItem={({item}) => (
-            <Text onPress={() => handlePressCampground(item)}>
-              {item.attributes.name}
-            </Text>
+            <TouchableOpacity onPress={() => handlePressCampground(item)}>
+              <View style={styles.container}>
+                <Image
+                  source={{uri: item.attributes['photo-url']}} // Assuming image URI is stored in item.attributes.image
+                  style={styles.image}
+                />
+                <Text style={styles.imageText}>{item.attributes.name}</Text>
+              </View>
+            </TouchableOpacity>
           )}
+          keyExtractor={item => item.id}
         />
       </View>
     </View>
@@ -107,12 +124,22 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     fontWeight: 'bold',
   },
+  image: {
+    width: 200,
+    height: 200,
+    resizeMode: 'cover',
+    marginBottom: 5,
+  },
   divider: {
     marginBottom: 20,
   },
   text: {
     fontSize: 18,
     textAlign: 'left',
+  },
+  imageText: {
+    fontSize: 14,
+    textAlign: 'center',
   },
   card: {
     height: 300,
