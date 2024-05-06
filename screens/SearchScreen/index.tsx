@@ -39,14 +39,14 @@ const SearchScreenStack = () => {
 const SearchScreen = () => {
   const {navigate} = useNavigation<StackNavigationProp<SearchParamList>>();
 
-  const [campgrounds, setCampgrounds] = useState<Campground>();
+  const [campgrounds, setCampgrounds] = useState<Campground[]>([]);
 
   const handleSearch = (text: string) => {
     getAutocomplete(text).then(data => setCampgrounds(data));
   };
 
-  const handlePressCampground = () => {
-    navigate('CampgroundDetails');
+  const handlePressCampground = (item: Campground) => {
+    navigate('CampgroundDetails', {campgroundId: item.id});
   };
 
   return (
