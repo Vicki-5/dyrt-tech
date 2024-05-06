@@ -10,13 +10,34 @@ const Stack = createNativeStackNavigator<SearchParamList>();
 
 export const getAutocomplete = async (
   query: string,
-): Promise<AutocompleteCampground[]> => {
+): Promise<Campground[]> => {
   const response = await axios.get(
     `https://staging.thedyrt.com/api/v6/autocomplete/campgrounds?q=${encodeURIComponent(
       query,
     )}`,
   );
-  return response.data;
+  return response.data.map((item: AutocompleteCampground) => ({
+    id: item.id.toString(), // Convert id to string as Campground's id is string type
+    type: item.type, // Assuming type is the same for both AutocompleteCampground and Campground
+    links: {self: ''}, // Assuming links are not relevant in the autocomplete context
+    attributes: {
+      coordinates: {
+        type: 'Point',
+        coordinates: [item.coordinates.lon, item.coordinates.lat],
+      },
+      latitude: item.coordinates.lat,
+      longitude: item.coordinates.lon,
+      name: item.name,
+      'photo-url': item.photoUrl,
+      region: item.region,
+      'region-name': item.region_name,
+      slug: item.slug,
+      'photos-count': item.photos_count,
+      'videos-count': item.videos_count,
+      'reviews-count': item.reviews_count,
+    },
+    relationships: {},
+  }));
 };
 
 const SearchScreenStack = () => {
@@ -74,7 +95,7 @@ const SearchScreen = () => {
           data={campgrounds}
           renderItem={({item}) => (
             <Text style={styles.itemName} onPress={handlePressCampground(item)}>
-              {item.name}
+              {item.attributes.name}
             </Text>
           )}
         />
