@@ -94,7 +94,9 @@ const SearchScreen = () => {
         <FlatList
           data={campgrounds}
           renderItem={({item}) => (
-            <Text style={styles.itemName} onPress={handlePressCampground(item)}>
+            <Text
+              style={styles.itemName}
+              onPress={() => handlePressCampground(item)}>
               {item.attributes.name}
             </Text>
           )}
