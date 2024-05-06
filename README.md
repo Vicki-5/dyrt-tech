@@ -84,6 +84,9 @@ There are no strict design requirements for this assignment so use your creativi
 
 # React Native README
 
+To install the app, run npm install at the root.
+Run pod install in the IOS directory.
+
 The following is the boilerplate README from the React Native CLI.
 
 ---
@@ -128,7 +131,7 @@ npm run ios
 yarn ios
 ```
 
-If everything is set up _correctly_, you should see your new app running in your _Android Emulator_ or _iOS Simulator_ shortly provided you have set up your emulator/simulator correctly.
+App should be running in your _Android Emulator_ or _iOS Simulator_ provided you have set up your emulator/simulator correctly.
 
 This is one way to run your app — you can also run it directly from within Android Studio and Xcode respectively.
 
